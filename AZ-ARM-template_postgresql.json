@@ -1,3 +1,5 @@
+#usage run this on azure cli as below:
+#az deployment group create --resource-group azureAI --template/file <template_file_name_with_path)
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
