@@ -1,32 +1,38 @@
-#usage run this on azure cli as below:
-#az deployment group create --resource-group azureAI --template/file <template_file_name_with_path)
 {
+  "_comment": "ARM template to deploy Azure Database for PostgreSQL - Flexible Server. Modify parameters.json before deployment.",
+  "_how_to_use": [
+    "1. Provide serverName, administratorLogin, administratorLoginPassword, and location in parameters.json",
+    "2. Password must meet Azure complexity rules",
+    "3. Deploy using Azure CLI or Azure DevOps pipeline"
+  ],
+
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+
   "parameters": {
     "serverName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the PostgreSQL server"
+        "description": "Name of the PostgreSQL Flexible Server (must be globally unique in Azure)"
       }
     },
     "administratorLogin": {
       "type": "string",
       "metadata": {
-        "description": "PostgreSQL admin username"
+        "description": "PostgreSQL admin username (cannot be 'postgres')"
       }
     },
     "administratorLoginPassword": {
       "type": "secureString",
       "metadata": {
-        "description": "PostgreSQL admin password"
+        "description": "Admin password (8–128 chars, upper, lower, number, special char required)"
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Azure region for the deployment"
+        "description": "Azure region where PostgreSQL server will be deployed"
       }
     },
     "postgresVersion": {
@@ -34,26 +40,28 @@
       "defaultValue": "14",
       "allowedValues": ["11", "12", "13", "14", "15"],
       "metadata": {
-        "description": "PostgreSQL version"
+        "description": "PostgreSQL engine version"
       }
     },
     "skuName": {
       "type": "string",
       "defaultValue": "Standard_D2s_v3",
       "metadata": {
-        "description": "Compute SKU"
+        "description": "Compute SKU for the server"
       }
     },
     "storageSizeGB": {
       "type": "int",
       "defaultValue": 32,
       "metadata": {
-        "description": "Storage size in GB"
+        "description": "Allocated storage size in GB"
       }
     }
   },
+
   "resources": [
     {
+      "_comment": "PostgreSQL Flexible Server resource",
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
       "apiVersion": "2023-03-01-preview",
       "name": "[parameters('serverName')]",
@@ -83,7 +91,9 @@
       }
     }
   ],
+
   "outputs": {
+    "_comment": "Useful values returned after deployment",
     "postgresServerName": {
       "type": "string",
       "value": "[parameters('serverName')]"
