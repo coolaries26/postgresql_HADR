@@ -1,0 +1,27 @@
+{
+  "_comment": "Parameters file for PostgreSQL Flexible Server ARM deployment",
+  "_instructions": [
+    "Replace values below before deploying",
+    "administratorLoginPassword must be strong and secure",
+    "location must match a valid Azure region"
+  ],
+
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+
+  "parameters": {
+    "serverName": {
+      "value": "pg-flex-alok-01"
+    },
+    "administratorLogin": {
+      "value": "pgadmin"
+    },
+    "administratorLoginPassword": {
+      "value": "StrongPassword@123"
+    },
+    "location": {
+      "value": "Central India"
+    }
+  }
+}
+``
