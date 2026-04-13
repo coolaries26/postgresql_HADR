@@ -1,0 +1,94 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the PostgreSQL server"
+      }
+    },
+    "administratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "PostgreSQL admin username"
+      }
+    },
+    "administratorLoginPassword": {
+      "type": "secureString",
+      "metadata": {
+        "description": "PostgreSQL admin password"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for the deployment"
+      }
+    },
+    "postgresVersion": {
+      "type": "string",
+      "defaultValue": "14",
+      "allowedValues": ["11", "12", "13", "14", "15"],
+      "metadata": {
+        "description": "PostgreSQL version"
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3",
+      "metadata": {
+        "description": "Compute SKU"
+      }
+    },
+    "storageSizeGB": {
+      "type": "int",
+      "defaultValue": 32,
+      "metadata": {
+        "description": "Storage size in GB"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2023-03-01-preview",
+      "name": "[parameters('serverName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "GeneralPurpose"
+      },
+      "properties": {
+        "version": "[parameters('postgresVersion')]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "storage": {
+          "storageSizeGB": "[parameters('storageSizeGB')]"
+        },
+        "backup": {
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "Disabled"
+        },
+        "network": {
+          "publicNetworkAccess": "Enabled"
+        },
+        "highAvailability": {
+          "mode": "Disabled"
+        },
+        "availabilityZone": "1"
+      }
+    }
+  ],
+  "outputs": {
+    "postgresServerName": {
+      "type": "string",
+      "value": "[parameters('serverName')]"
+    },
+    "postgresServerFQDN": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('serverName'))).fullyQualifiedDomainName]"
+    }
+  }
+}
